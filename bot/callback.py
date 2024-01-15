@@ -62,7 +62,7 @@ async def cbstart(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("cbinfo"))
 async def cbinfo(_, query: CallbackQuery):
     await query.edit_message_text(
-        f"""🌐 **bot information !**
+        """🌐 **bot information !**
 
 🤖 __This bot was created to stream video in telegram group video chats using several methods from WebRTC.__
 
@@ -79,19 +79,16 @@ Client Library and Framework in Pure Python for Users and Bots.__
 
 __This bot licensed under GNU-GPL 3.0 License__""",
         reply_markup=InlineKeyboardMarkup(
-            [[
-                InlineKeyboardButton(
-                    "🏡 Go Back", callback_data="cbstart")
-            ]]
+            [[InlineKeyboardButton("🏡 Go Back", callback_data="cbstart")]]
         ),
-        disable_web_page_preview=True
+        disable_web_page_preview=True,
     )
 
 
 @Client.on_callback_query(filters.regex("cblist"))
 async def cblist(_, query: CallbackQuery):
     await query.edit_message_text(
-        f"""📚 All Command List:
+        """📚 All Command List:
 
 » /vplay (reply to video or yt/live url) - to stream video
 » /vstop - stop the video streaming
@@ -125,11 +122,9 @@ async def cblist(_, query: CallbackQuery):
 
 ⚡ __Maintained by Veez Project Team__""",
         reply_markup=InlineKeyboardMarkup(
-            [[
-                InlineKeyboardButton(
-                    "🏡 Go Back", callback_data="cbstart")
-            ]]
-        ))
+            [[InlineKeyboardButton("🏡 Go Back", callback_data="cbstart")]]
+        ),
+    )
 
 
 @Client.on_callback_query(filters.regex("cls"))

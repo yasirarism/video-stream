@@ -31,7 +31,7 @@ FFMPEG_PROCESS = {}
 
 
 def convert_seconds(seconds: int) -> str:
-    seconds = seconds % (24 * 3600)
+    seconds %= 24 * 3600
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
@@ -48,14 +48,12 @@ def raw_converter(dl, song, video):
     )
 
 async def leave_call(chat_id: int):
-    process = FFMPEG_PROCESS.get(chat_id)
-    if process:
+    if process := FFMPEG_PROCESS.get(chat_id):
         try:
             process.send_signal(SIGINT)
             await asyncio.sleep(3)
         except Exception as e:
             print(e)
-            pass
     try:
         await call_py.leave_group_call(chat_id)
     except Exception as e:
@@ -89,7 +87,7 @@ async def startvideo(client, m: Message):
                 ]
             ]
         )
-    
+
     replied = m.reply_to_message
     if not replied:
         if len(m.command) < 2:
@@ -144,10 +142,9 @@ async def startvideo(client, m: Message):
                     reply_markup=keyboard,
                     caption=f"💡 **video streaming started !**\n\n🏷 **Name:** {title}\n⏱ **Duration:** `{convert_seconds(duration)}` m\n\n» **join to video chat on the top to watch the video.**")
                 return await msg.delete()
-                await idle()
             except Exception as e:
                 await msg.edit(f"🚫 **error** | `{e}`")
-   
+
     elif replied.video or replied.document:
         msg = await m.reply("📥 downloading video...")
         video = await client.download_media(m.reply_to_message)
@@ -195,14 +192,12 @@ async def startvideo(client, m: Message):
 async def stopvideo(client, m: Message):
     chat_id = m.chat.id
     try:
-        process = FFMPEG_PROCESS.get(chat_id)
-        if process:
+        if process := FFMPEG_PROCESS.get(chat_id):
             try:
                 process.send_signal(SIGINT)
                 await asyncio.sleep(3)
             except Exception as e:
                 print(e)
-                pass
         await call_py.leave_group_call(chat_id)
         await m.reply("✅ **successfully left vc !**")
     except Exception as e:
@@ -210,7 +205,7 @@ async def stopvideo(client, m: Message):
 
 @call_py.on_stream_end()
 async def handler(client: PyTgCalls, update: Update):
-    LOG.info(f"called ended stream")
+    LOG.info("called ended stream")
     chat_id = update.chat_id
     await call_py.leave_group_call(chat_id)
 
@@ -315,14 +310,12 @@ async def chstream(client, m: Message):
 async def chstopvideo(client, m: Message):
     chat_id = Veez.CHANNEL
     try:
-        process = FFMPEG_PROCESS.get(chat_id)
-        if process:
+        if process := FFMPEG_PROCESS.get(chat_id):
             try:
                 process.send_signal(SIGINT)
                 await asyncio.sleep(3)
             except Exception as e:
                 print(e)
-                pass
         await call_py.leave_group_call(chat_id)
         await m.reply("✅ **video streaming channel ended**")
     except Exception as e:

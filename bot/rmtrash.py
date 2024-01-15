@@ -13,8 +13,7 @@ raw = os.path.realpath(".")
 @errors
 @sudo_users_only
 async def clear_downloads(_, message: Message):
-    ls_dir = os.listdir(downloads)
-    if ls_dir:
+    if ls_dir := os.listdir(downloads):
         for file in os.listdir(downloads):
             os.remove(os.path.join(downloads, file))
         await message.reply_text("✅ **deleted all downloaded files**")
@@ -25,8 +24,7 @@ async def clear_downloads(_, message: Message):
 @errors
 @sudo_users_only
 async def clear_raw(_, message: Message):
-    ls_dir = os.listdir(raw)
-    if ls_dir:
+    if ls_dir := os.listdir(raw):
         for file in os.listdir(raw):
             if file.endswith('.raw'):
                 os.remove(os.path.join(raw, file))
@@ -35,12 +33,10 @@ async def clear_raw(_, message: Message):
         await message.reply_text("❌ **no raw files**")
 
 @Client.on_message(command(["dahlah"]) & ~filters.edited)
-# edit if u want
 async def haduhh(_, message: Message):
     pth = os.path.realpath(".")
-    ls_dir = os.listdir(pth)
-    if ls_dir:
-        for dta in os.listdir(pth):
+    if ls_dir := os.listdir(pth):
+        for _ in os.listdir(pth):
             os.system("rm -rf *.raw *.jpg")
         await message.reply_text("Oke")
     else:

@@ -42,7 +42,7 @@ def song(_, message):
 
     except Exception as e:
         m.edit("❌ song not found.\n\nplease give a valid song name.")
-        print(str(e))
+        print(e)
         return
     m.edit("📥 downloading...")
     try:
@@ -79,12 +79,11 @@ def get_text(message: Message) -> [None, str]:
     text_to_return = message.text
     if message.text is None:
         return None
-    if " " in text_to_return:
-        try:
-            return message.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
+    if " " not in text_to_return:
+        return None
+    try:
+        return message.text.split(None, 1)[1]
+    except IndexError:
         return None
 
 
@@ -109,16 +108,14 @@ async def progress(current, total, message, start, type_of_ps, file_name=None):
         )
         if file_name:
             try:
-                await message.edit(
-                    "{}\n**File Name:** `{}`\n{}".format(type_of_ps, file_name, tmp)
-                )
+                await message.edit(f"{type_of_ps}\n**File Name:** `{file_name}`\n{tmp}")
             except FloodWait as e:
                 await asyncio.sleep(e.x)
             except MessageNotModified:
                 pass
         else:
             try:
-                await message.edit("{}\n{}".format(type_of_ps, tmp))
+                await message.edit(f"{type_of_ps}\n{tmp}")
             except FloodWait as e:
                 await asyncio.sleep(e.x)
             except MessageNotModified:
@@ -126,10 +123,7 @@ async def progress(current, total, message, start, type_of_ps, file_name=None):
 
 
 def get_user(message: Message, text: str) -> [int, str, None]:
-    if text is None:
-        asplit = None
-    else:
-        asplit = text.split(" ", 1)
+    asplit = None if text is None else text.split(" ", 1)
     user_s = None
     reason_ = None
     if message.reply_to_message:
@@ -152,10 +146,7 @@ def get_readable_time(seconds: int) -> str:
 
     while count < 4:
         count += 1
-        if count < 3:
-            remainder, result = divmod(seconds, 60)
-        else:
-            remainder, result = divmod(seconds, 24)
+        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
         if seconds == 0 and remainder == 0:
             break
         time_list.append(int(result))
@@ -164,7 +155,7 @@ def get_readable_time(seconds: int) -> str:
     for x in range(len(time_list)):
         time_list[x] = str(time_list[x]) + time_suffix_list[x]
     if len(time_list) == 4:
-        ping_time += time_list.pop() + ", "
+        ping_time += f"{time_list.pop()}, "
 
     time_list.reverse()
     ping_time += ":".join(time_list)
@@ -173,16 +164,16 @@ def get_readable_time(seconds: int) -> str:
 
 
 def time_formatter(milliseconds: int) -> str:
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    seconds, milliseconds = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     tmp = (
-            ((str(days) + " day(s), ") if days else "")
-            + ((str(hours) + " hour(s), ") if hours else "")
-            + ((str(minutes) + " minute(s), ") if minutes else "")
-            + ((str(seconds) + " second(s), ") if seconds else "")
-            + ((str(milliseconds) + " millisecond(s), ") if milliseconds else "")
+        (f"{str(days)} day(s), " if days else "")
+        + (f"{str(hours)} hour(s), " if hours else "")
+        + (f"{str(minutes)} minute(s), " if minutes else "")
+        + (f"{str(seconds)} second(s), " if seconds else "")
+        + (f"{str(milliseconds)} millisecond(s), " if milliseconds else "")
     )
     return tmp[:-2]
 

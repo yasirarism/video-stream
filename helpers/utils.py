@@ -18,14 +18,12 @@ def raw_converter(dl, song, video):
     )
 
 async def leave_call(chat_id: int):
-    process = FFMPEG_PROCESS.get(chat_id)
-    if process:
+    if process := FFMPEG_PROCESS.get(chat_id):
         try:
             process.send_signal(SIGINT)
             await asyncio.sleep(3)
         except Exception as e:
             print(e)
-            pass
     try:
         await call_py.leave_group_call(chat_id)
     except Exception as e:

@@ -11,12 +11,12 @@ import glob
 import importlib
 from pathlib import Path
 from pyrogram import Client, idle
-from config import Veez 
+from config import Veez
 from bot.videoplayer import app
 from bot.videoplayer import call_py
 from helpers.loggings import LOG
- 
-    
+
+
 bot = Client(
     ":memory:",
     Veez.API_ID,
@@ -29,17 +29,17 @@ StartTime = time.time()
 
 loop = asyncio.get_event_loop()
 
-_path = f"bot/*.py"
+_path = "bot/*.py"
 files = glob.glob(_path)
 
 def load_plugins(plugin_name):
     path = Path(f"bot/{plugin_name}.py")
-    name = "bot.{}".format(plugin_name)
+    name = f"bot.{plugin_name}"
     spec = importlib.util.spec_from_file_location(name, path)
     load = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(load)
-    sys.modules[f"bot." + plugin_name] = load
-    print("Imported => " + plugin_name)
+    sys.modules[f"bot.{plugin_name}"] = load
+    print(f"Imported => {plugin_name}")
 
 async def start():
     print('\n')
@@ -56,9 +56,9 @@ async def start():
             plugin_name = path_.stem
             load_plugins(plugin_name.replace(".py", ""))
     print('------------------- INITIATED VEEZ ---------------------')
-    print('     Logged in as User =>> {}'.format((await app.get_me()).first_name))
+    print(f'     Logged in as User =>> {(await app.get_me()).first_name}')
     if bot:
-        print('     Logged in to Bots =>> {}'.format((await bot.get_me()).first_name))
+        print(f'     Logged in to Bots =>> {(await bot.get_me()).first_name}')
     print('--------------------------------------------------------')
     await idle()
 if __name__ == '__main__':
